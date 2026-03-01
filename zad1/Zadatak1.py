@@ -1,12 +1,8 @@
-import sys
-import re
-
 def main():
     try:
-        if sys.stdin.encoding and sys.stdin.encoding.lower() != 'utf-8':
-            sys.stdin.reconfigure(encoding='utf-8')
+        ulaz = open(0, 'r', encoding='utf-8')
         # 1) Učitati podatke sa standardnog ulaza
-        input_data = sys.stdin.read().splitlines()
+        input_data = ulaz.read().splitlines()
         
         target_izdavac = ""
         target_manga = ""
@@ -49,7 +45,7 @@ def main():
             izdavac = cleaned_parts[1]
             datum_str = cleaned_parts[2]
             
-            if not re.match(r"^\d{2}\.\d{4}\.$", datum_str):
+            if not (len(datum_str) == 8 and datum_str[2] == '.' and datum_str[7] == '.' and datum_str[:2].isdigit() and datum_str[3:7].isdigit()):
                 raise Exception()
             
             mm = int(datum_str[0:2])
@@ -103,7 +99,10 @@ def main():
         
         out_lines = []
         for manga in sorted(list(publisher_mangas)):
-            vols = [v for v in manga_data[manga] if v['izdavac'] == target_izdavac]
+            vols = []
+            for v in manga_data[manga]:
+                if v['izdavac'] == target_izdavac:
+                    vols.append(v)
             vols.sort(key=lambda x: x['date_key'])
             
             all_lengths = []
@@ -150,7 +149,7 @@ def main():
 
     except Exception:
         print("GRESKA")
-        sys.exit()
+        return
 
 if __name__ == "__main__":
     main()

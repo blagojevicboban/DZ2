@@ -1,6 +1,3 @@
-import sys
-import re
-
 def main():
     """
     Glavna funkcija programa koja vrši obradu podataka o mangama.
@@ -8,12 +5,10 @@ def main():
     tekstualnu datoteku manga.txt, parsira njen sadržaj i ispisuje rezultate.
     """
     try:
+        ulaz = open(0, 'r', encoding='utf-8')
         # 1) Učitati podatke sa standardnog ulaza (stdin)
-        # Postavljamo UTF-8 enkoding da bismo na Windowsu bezbedno čitali Unicode/ćirilicu
-        if sys.stdin.encoding and sys.stdin.encoding.lower() != 'utf-8':
-            sys.stdin.reconfigure(encoding='utf-8')
         # Zbog funkcije splitlines(), automatski razdvajamo svaku liniju u element liste
-        input_data = sys.stdin.read().splitlines()
+        input_data = ulaz.read().splitlines()
         
         target_izdavac = ""
         target_manga = ""
@@ -66,7 +61,7 @@ def main():
             
             # Upotreba Regularnog Izraza (Regex) kako bismo proverili ispravnost oblika datuma u formatu MM.GGGG.
             # ^ označava početak, \d{2} je dve cifre, \. je bukvalna tačka, pa 4 cifre, i kraj niske $
-            if not re.match(r"^\d{2}\.\d{4}\.$", datum_str):
+            if not (len(datum_str) == 8 and datum_str[2] == '.' and datum_str[7] == '.' and datum_str[:2].isdigit() and datum_str[3:7].isdigit()):
                 raise Exception()
             
             # Sečenje datuma iz stringa i pretvaranje tekstualnih meseca i godine u celobrojne numere (int)
@@ -140,7 +135,10 @@ def main():
         # Prebačen nazad u pravu i abecedno uređenu listu svih ključeva - obavezno sort da nas ne minira redosled hasheva u Python set()
         for manga in sorted(list(publisher_mangas)):
             # Odaberimo samo one tomove iz unutrašnjosti (value liste rečnika) čiji je izdavač ciljni target string
-            vols = [v for v in manga_data[manga] if v['izdavac'] == target_izdavac]
+            vols = []
+            for v in manga_data[manga]:
+                if v['izdavac'] == target_izdavac:
+                    vols.append(v)
             
             # Sortiramo te izdvojene elemente korišćenjem anonimne (lambda) ugrađene rutine zasnovanoj na tuple-ovima MM.YYYY iz ranijih koraka
             vols.sort(key=lambda x: x['date_key'])
@@ -205,7 +203,7 @@ def main():
     except Exception:
         # Premošćavanje celog try() bloka: Neka izuzetna kritična i neslućena greška ili greška koju mi sami trigerujemo kada iskoči iz naših validatora uslova
         print("GRESKA")
-        sys.exit()
+        return
 
 if __name__ == "__main__":
     main()
