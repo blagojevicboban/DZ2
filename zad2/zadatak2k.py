@@ -1,6 +1,3 @@
-import sys
-import re
-
 def parse_email(email):
     """
     Korisnička funkcija koja proverava da li prosleđeni string predstavlja validnu E-mail adresu
@@ -13,27 +10,48 @@ def parse_email(email):
     - Nastavak .rs ili .bg.ac.rs
     
     Vraća normalizovanu email adresu i njenu skraćenu verziju za prikaz na ekranu,
-    ili 'None' ukoliko email ne zadovaljava uslov regularnog izraza.
+    ili 'None' ukoliko email ne zadovaljava zadate uslove.
     """
     
-    # Regex formula (Regular Expression) za evaluaciju pattern-a studentskih i radničkih mejlova
-    # ^ označava početni karakter
-    # [^@\s|\-]+ hvata svaku seriju karaktera koja nije @, razmak(\s), |, ni znak -
-    # (student\.)? je opciona (?) grupa karaktera
-    # ([A-Za-z]{3}) predstavlja grupu od tačno 3 proizvoljna slova abecede
-    # \.(rs|bg\.ac\.rs)$ označava sufiks na samom kraju niza ($)
-    pattern = r'^([^@\s|\-]+)@(student\.)?([A-Za-z]{3})\.(rs|bg\.ac\.rs)$'
-    
-    # Proveri celokopan string uz pomoć ugrađene biblioteke 're'
-    match = re.fullmatch(pattern, email)
-    if not match:
+    # Razdvajanje email adrese na prefiks i domen preko '@' simbola
+    parts = email.split('@')
+    if len(parts) != 2:
         return None
+        
+    prefix = parts[0]
+    domain = parts[1]
     
-    # Izdvajanje match-ovanih grupa koje smo napravili u zagradama unutar regex izraza
-    prefix = match.group(1)
-    student_part = match.group(2) or ""  # Ako nije student ovo će vratiti None, pa mi forsiramo da ostane bar prazan string ""
-    fax = match.group(3)
+    if not prefix:
+        return None
+        
+    # Provera da li prefiks sadrži nedozvoljene karaktere (' ', '|', '-', '@') i prazne karaktere
+    for char in prefix:
+        if char in (' ', '\t', '\n', '\r', '|', '-', '@'):
+            return None
+            
+    # Provera i izdvajanje opcionog student dela
+    student_part = ""
+    if domain.startswith("student."):
+        student_part = "student."
+        domain = domain[len("student."):] # Uklanjamo "student." iz domena za dalju obradu
+        
+    # Izdvajanje fax/ustanove (sve do prve tačke) i sufiksa (od prve tačke)
+    dot_idx = domain.find('.')
+    if dot_idx == -1:
+        return None
+        
+    fax = domain[:dot_idx]
     
+    # Fax/ustanova mora sadržati tačno 3 slova alfabeta
+    if len(fax) != 3 or not fax.isalpha():
+        return None
+        
+    suffix = domain[dot_idx:]
+    
+    # Sufiks mora biti .rs ili .bg.ac.rs
+    if suffix not in ('.rs', '.bg.ac.rs'):
+        return None
+        
     # Normalizovana email adresa u malim slovima (.lower()) za lakše poređenje u procesima
     norm = f"{prefix}@{student_part}{fax}.rs".lower()
     
@@ -50,9 +68,8 @@ def main():
     """
     try:
         # 1) Učitavanje standardnog ulaza (ime ulazne i izlazne datoteke)
-        if sys.stdin.encoding and sys.stdin.encoding.lower() != 'utf-8':
-            sys.stdin.reconfigure(encoding='utf-8')
-        input_lines = sys.stdin.read().splitlines()
+        ulaz = open(0, "r", encoding='utf-8')
+        input_lines = ulaz.read().splitlines()
         
         # Očekujemo obavezna makar dva reda teksta na standardnom stdin-u
         if len(input_lines) < 2:
@@ -151,7 +168,7 @@ def main():
     except Exception:
         # Sve greške hvata zajednička 'Catch-all' Exeption zgrada, uz prekid izvršne moći programa
         print("GRESKA")
-        sys.exit()
+        return
 
 if __name__ == "__main__":
     main()

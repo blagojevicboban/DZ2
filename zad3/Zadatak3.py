@@ -1,15 +1,26 @@
-import sys
-import re
-
 def is_valid_number(num_str):
-    pattern = r'^(0|\+381)\d{9,10}$'
-    return bool(re.fullmatch(pattern, num_str))
+    if not num_str:
+        return False
+        
+    if num_str.startswith('0'):
+        rest = num_str[1:]
+    elif num_str.startswith('+381'):
+        rest = num_str[4:]
+    else:
+        return False
+        
+    if not (9 <= len(rest) <= 10):
+        return False
+        
+    if not rest.isdigit():
+        return False
+            
+    return True
 
 def main():
     try:
-        if sys.stdin.encoding and sys.stdin.encoding.lower() != 'utf-8':
-            sys.stdin.reconfigure(encoding='utf-8')
-        input_lines = sys.stdin.read().splitlines()
+        ulaz = open(0, "r", encoding='utf-8')
+        input_lines = ulaz.read().splitlines()
         if len(input_lines) < 2:
             return
             
@@ -48,16 +59,31 @@ def main():
             for item in call_items:
                 item = item.strip()
                 # Ocekujemo format: broj(mm:ss)
-                match = re.fullmatch(r'^([^(]+)\((\d{2}):(\d{2})\)$', item)
-                if not match:
+                open_paren = item.find('(')
+                close_paren = item.find(')')
+                if open_paren == -1 or close_paren == -1 or close_paren != len(item) - 1:
                     raise Exception()
                     
-                callee = match.group(1).strip()
+                callee = item[:open_paren].strip()
                 if not is_valid_number(callee):
                     raise Exception()
                     
-                mm = int(match.group(2))
-                ss = int(match.group(3))
+                time_str = item[open_paren+1:close_paren]
+                time_parts = time_str.split(':')
+                if len(time_parts) != 2:
+                    raise Exception()
+                    
+                mm_str = time_parts[0]
+                ss_str = time_parts[1]
+                
+                if len(mm_str) != 2 or len(ss_str) != 2:
+                    raise Exception()
+                    
+                if not mm_str.isdigit() or not ss_str.isdigit():
+                    raise Exception()
+                    
+                mm = int(mm_str)
+                ss = int(ss_str)
                 
                 if not (0 <= mm <= 59) or not (0 <= ss <= 59):
                     raise Exception()
@@ -88,7 +114,7 @@ def main():
                 
     except Exception:
         print("GRESKA")
-        sys.exit()
+        return
 
 if __name__ == "__main__":
     main()

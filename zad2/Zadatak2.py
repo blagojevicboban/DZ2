@@ -1,28 +1,44 @@
-import sys
-import re
-
 def parse_email(email):
-    # Regex for both student and employee emails
-    # prefix can be anything except @, |, -, or spaces
-    pattern = r'^([^@\s|\-]+)@(student\.)?([A-Za-z]{3})\.(rs|bg\.ac\.rs)$'
-    match = re.fullmatch(pattern, email)
-    if not match:
+    parts = email.split('@')
+    if len(parts) != 2:
         return None
+        
+    prefix = parts[0]
+    domain = parts[1]
     
-    prefix = match.group(1)
-    student_part = match.group(2) or ""
-    fax = match.group(3)
-    
+    if not prefix:
+        return None
+        
+    for char in prefix:
+        if char in (' ', '\t', '\n', '\r', '|', '-', '@'):
+            return None
+            
+    student_part = ""
+    if domain.startswith("student."):
+        student_part = "student."
+        domain = domain[len("student."):]
+        
+    dot_idx = domain.find('.')
+    if dot_idx == -1:
+        return None
+        
+    fax = domain[:dot_idx]
+    if len(fax) != 3 or not fax.isalpha():
+        return None
+        
+    suffix = domain[dot_idx:]
+    if suffix not in ('.rs', '.bg.ac.rs'):
+        return None
+        
     norm = f"{prefix}@{student_part}{fax}.rs".lower()
     disp = f"{prefix}-{fax}"
     
     return norm, disp
 
 def main():
-    if sys.stdin.encoding and sys.stdin.encoding.lower() != 'utf-8':
-        sys.stdin.reconfigure(encoding='utf-8')
     try:
-        input_lines = sys.stdin.read().splitlines()
+        ulaz = open(0, "r", encoding='utf-8')
+        input_lines = ulaz.read().splitlines()
         if len(input_lines) < 2:
             return
             
@@ -97,7 +113,7 @@ def main():
                 
     except Exception:
         print("GRESKA")
-        sys.exit()
+        return
 
 if __name__ == "__main__":
     main()

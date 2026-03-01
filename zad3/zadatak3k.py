@@ -1,19 +1,30 @@
-import sys
-import re
-
 def is_valid_number(num_str):
     """
-    Korisnička funkcija koja putem Regularnih Izraza (Regex) validira da li je broj telefona ispravan.
+    Korisnička funkcija koja string manipulacijama validira da li je broj telefona ispravan.
     
     Pravila formata broja:
     - Mora počinjati sa prefiksom '0' ili int. formom '+381'
-    - Nakon prefiksa mora slediti blok između 9 i 10 numeričkih cifara (\d)
+    - Nakon prefiksa mora slediti blok između 9 i 10 numeričkih cifara
     
-    Vraća True ako postoji podudaranje i False ako je regex pao (broj je nevalidan).
+    Vraća True ako su ispunjeni uslovi formata broja, inače False.
     """
-    pattern = r'^(0|\+381)\d{9,10}$'
-    # fullmatch garantuje da ceo string od početka (^) do kraja ($) poštuje obrazac, a funkcija bool() prevodi rezultat u Tačno/Netačno
-    return bool(re.fullmatch(pattern, num_str))
+    if not num_str:
+        return False
+        
+    if num_str.startswith('0'):
+        rest = num_str[1:]
+    elif num_str.startswith('+381'):
+        rest = num_str[4:]
+    else:
+        return False
+        
+    if not (9 <= len(rest) <= 10):
+        return False
+        
+    if not rest.isdigit():
+        return False
+            
+    return True
 
 def main():
     """
@@ -21,10 +32,9 @@ def main():
     smeštenih u prosleđenom baznom tekstualnom fajlu.
     """
     try:
-        # 1) Hvatanje linija sa standardnog ulaza red po red pomoću ugrađene Python celine (stdin)
-        if sys.stdin.encoding and sys.stdin.encoding.lower() != 'utf-8':
-            sys.stdin.reconfigure(encoding='utf-8')
-        input_lines = sys.stdin.read().splitlines()
+        # 1) Hvatanje linija sa standardnog ulaza red po red pomoću open(0)
+        ulaz = open(0, "r", encoding='utf-8')
+        input_lines = ulaz.read().splitlines()
         
         # Prema pravilu neophodna su najmanje 2 podatka: ime_ulaznog_fajla i ime_izlaznog_fajla, inače zaustavi se.
         if len(input_lines) < 2:
@@ -80,21 +90,34 @@ def main():
                 item = item.strip()
                 
                 # Zadan nam je format gde stoji prvo Broj pa onda zagrade sa trajanjem -> "broj(mm:ss)"
-                # ^([^(]+): hvata bilo koji blok karaktera sve dok ispred njega ne iskoči znak leve otvorene zagrade '\('
-                # \( : Hvata bukvalno znak leve zagrade, sledi ga 2 broja za minut (\d{2}), pa : pa dvocifren sekund, onda desna zagrada \)
-                match = re.fullmatch(r'^([^(]+)\((\d{2}):(\d{2})\)$', item)
-                if not match:
+                open_paren = item.find('(')
+                close_paren = item.find(')')
+                if open_paren == -1 or close_paren == -1 or close_paren != len(item) - 1:
                     raise Exception()
                     
-                callee = match.group(1).strip() # Na osnovu RegExp grupisanja, ovo je taj primalac (deo ispred leve zagrade)
+                callee = item[:open_paren].strip() # Deo ispred leve zagrade je broj primaoca
                 
-                # Validnost drugosagovornikovog broja takođe podložna našoj ugrađenoj Regex proveri
+                # Validnost drugosagovornikovog broja ispitujemo našom funkcijom
                 if not is_valid_number(callee):
                     raise Exception()
                     
-                # Drugi par zagrada regex match-a sadrži minute, a treći sekunde. Pomoću int() su pretvorene iz stringa u prave celobrojne numere.
-                mm = int(match.group(2))
-                ss = int(match.group(3))
+                time_str = item[open_paren+1:close_paren]
+                time_parts = time_str.split(':')
+                if len(time_parts) != 2:
+                    raise Exception()
+                    
+                mm_str = time_parts[0]
+                ss_str = time_parts[1]
+                
+                if len(mm_str) != 2 or len(ss_str) != 2:
+                    raise Exception()
+                    
+                if not mm_str.isdigit() or not ss_str.isdigit():
+                    raise Exception()
+                    
+                # Parsiranje u celobrojne vrednosti
+                mm = int(mm_str)
+                ss = int(ss_str)
                 
                 # Standardna logika protoka vremena - sekunde i minute moraju padati između nule i 59.
                 if not (0 <= mm <= 59) or not (0 <= ss <= 59):
@@ -139,7 +162,7 @@ def main():
     except Exception:
         # Premošćavanje svake izazvane Raise Exeption unutrašnje anomalije i globalni mehanizam ispisivanja greške teksta programa
         print("GRESKA")
-        sys.exit()
+        return
 
 # Sistemski ulaz pozivanjem preko terminal komadne linije
 if __name__ == "__main__":
