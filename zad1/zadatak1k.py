@@ -33,7 +33,7 @@ def main():
                 file_lines = f.readlines()
         except FileNotFoundError:
             # Ukoliko fajl na disku nije pronađen, ispisuje fiksnu poruku i prekida
-            print("DAT_GRESKA")
+            print("DAT_GRESKA", end="")
             return
 
         # 3) Parsiranje pročitanih linija u datoteci
@@ -105,7 +105,7 @@ def main():
                 lengths.append(length)
             
             # Manuelno proračunavanje za taj poslednji chapter sve do kraja same knjige manga sveske
-            last_length = broj_strana - ch_starts[-1] + 1
+            last_length = broj_strana - ch_starts[-1]
             if last_length <= 0:
                 raise Exception()
             lengths.append(last_length)
@@ -164,7 +164,7 @@ def main():
         # Pisanje u ciljani, generisani tekstualni fajl preko komande .write()
         with open(izd_filename, "w", encoding="utf-8") as f:
             if out_lines: # Provera da linije uopšte prilažu elemente pre modifikacije diska
-                f.write("\n".join(out_lines) + "\n")
+                f.write("\n".join(out_lines))
 
         # 5) Kreiranje druge izlazne datoteke pod specijalnim stalnim imenom ('chapters.txt')
         # Proveravamo da li je meta uneta sa standardnog ulaza validna pre pisanja u novi dokument
@@ -198,11 +198,11 @@ def main():
                     # Svaka n-torka će preuzeti svoju liniju, npr format t.c tj. 4.tom 3.chapter
                     for t, c in shortest_chaps:
                         f.write(f"{t}.{c}\n")
-                    f.write(f"{min_len}str\n") # A za kraj fajla ista najmanja cifra u "str" formatu
+                    f.write(f"{min_len}str") # A za kraj fajla ista najmanja cifra u "str" formatu
 
     except Exception:
         # Premošćavanje celog try() bloka: Neka izuzetna kritična i neslućena greška ili greška koju mi sami trigerujemo kada iskoči iz naših validatora uslova
-        print("GRESKA")
+        print("GRESKA", end="")
         return
 
 if __name__ == "__main__":

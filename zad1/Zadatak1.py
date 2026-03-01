@@ -24,7 +24,7 @@ def main():
             with open("manga.txt", "r", encoding="utf-8-sig") as f:
                 file_lines = f.readlines()
         except FileNotFoundError:
-            print("DAT_GRESKA")
+            print("DAT_GRESKA", end="")
             return
 
         # Parsiranje datoteke
@@ -78,7 +78,7 @@ def main():
                     raise Exception()
                 lengths.append(length)
             
-            last_length = broj_strana - ch_starts[-1] + 1
+            last_length = broj_strana - ch_starts[-1]
             if last_length <= 0:
                 raise Exception()
             lengths.append(last_length)
@@ -112,20 +112,15 @@ def main():
             num_vols = len(vols)
             num_chaps = len(all_lengths)
             avg_len = sum(all_lengths) / num_chaps if num_chaps > 0 else 0.0
-            avg_str = f"{avg_len:.2f}"
-            if avg_str.endswith(".00"):
-                avg_str = str(int(avg_len))
-            elif avg_str[-1] == '0':
-                avg_str = avg_str[:-1]
             
-            l1 = f"{manga}, {num_vols}, {num_chaps}, {avg_str}"
+            l1 = f"{manga}, {num_vols}, {num_chaps}, {avg_len:.2f}"
             l2 = ", ".join(str(x) for x in all_lengths)
             out_lines.append(l1)
             out_lines.append(l2)
             
         with open(izd_filename, "w", encoding="utf-8") as f:
             if out_lines:
-                f.write("\n".join(out_lines) + "\n")
+                f.write("\n".join(out_lines))
 
         # Kreiranje druge izlazne datoteke (chapters.txt)
         if target_manga and target_manga in manga_data:
@@ -150,10 +145,10 @@ def main():
                 with open("chapters.txt", "w", encoding="utf-8") as f:
                     for t, c in shortest_chaps:
                         f.write(f"{t}.{c}\n")
-                    f.write(f"{min_len}str\n")
+                    f.write(f"{min_len}str")
 
     except Exception:
-        print("GRESKA")
+        print("GRESKA", end="")
         return
 
 if __name__ == "__main__":
