@@ -1,0 +1,9 @@
+BEG->BUD->PRG
+Ryanair 10:00-11:00,30
+  Wizz Air 13:00-14:00,40
+BEG->VIE->PRG
+Lufthansa 06:00-07:30,120
+  Austrian Airlines 08:30-09:30,80
+  Austrian Airlines 18:00-19:00,100
+Lufthansa 15:00-16:30,150
+  Austrian Airlines 18:00-19:00,100

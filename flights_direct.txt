@@ -1,0 +1,24 @@
+BEG->BUD
+Ryanair
+10:00-11:00,30
+BEG->PRG
+Air Serbia
+12:00-14:00,100
+Czech Airlines
+12:00-13:30,120
+BEG->TIV
+Air Serbia
+05:40-06:30,60
+14:00-14:50,65
+20:45-21:30,55
+BEG->VIE
+Lufthansa
+06:00-07:30,120
+15:00-16:30,150
+BUD->PRG
+Wizz Air
+13:00-14:00,40
+VIE->PRG
+Austrian Airlines
+08:30-09:30,80
+18:00-19:00,100
