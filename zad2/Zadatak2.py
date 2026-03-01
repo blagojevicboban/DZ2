@@ -19,6 +19,8 @@ def parse_email(email):
     return norm, disp
 
 def main():
+    if sys.stdin.encoding and sys.stdin.encoding.lower() != 'utf-8':
+        sys.stdin.reconfigure(encoding='utf-8')
     try:
         input_lines = sys.stdin.read().splitlines()
         if len(input_lines) < 2:

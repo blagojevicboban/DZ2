@@ -50,6 +50,8 @@ def main():
     """
     try:
         # 1) Učitavanje standardnog ulaza (ime ulazne i izlazne datoteke)
+        if sys.stdin.encoding and sys.stdin.encoding.lower() != 'utf-8':
+            sys.stdin.reconfigure(encoding='utf-8')
         input_lines = sys.stdin.read().splitlines()
         
         # Očekujemo obavezna makar dva reda teksta na standardnom stdin-u

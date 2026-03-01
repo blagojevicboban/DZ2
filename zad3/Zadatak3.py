@@ -7,6 +7,8 @@ def is_valid_number(num_str):
 
 def main():
     try:
+        if sys.stdin.encoding and sys.stdin.encoding.lower() != 'utf-8':
+            sys.stdin.reconfigure(encoding='utf-8')
         input_lines = sys.stdin.read().splitlines()
         if len(input_lines) < 2:
             return

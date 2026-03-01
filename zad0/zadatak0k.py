@@ -206,6 +206,8 @@ def main():
     """
     Krupni upravljački logički tok kroz sve faze sa hvatanjem i obradama generičkih i datotečnih Exception-a u Pythonu.
     """
+    if sys.stdin.encoding and sys.stdin.encoding.lower() != 'utf-8':
+        sys.stdin.reconfigure(encoding='utf-8')
     try:
         # Čita se željeni format i ispravno razdvaja "grad_polaska->grad_dolaska" sa STDIN (terminal) po zadatku
         trazeni_par = sys.stdin.readline().strip()

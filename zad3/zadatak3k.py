@@ -22,6 +22,8 @@ def main():
     """
     try:
         # 1) Hvatanje linija sa standardnog ulaza red po red pomoću ugrađene Python celine (stdin)
+        if sys.stdin.encoding and sys.stdin.encoding.lower() != 'utf-8':
+            sys.stdin.reconfigure(encoding='utf-8')
         input_lines = sys.stdin.read().splitlines()
         
         # Prema pravilu neophodna su najmanje 2 podatka: ime_ulaznog_fajla i ime_izlaznog_fajla, inače zaustavi se.

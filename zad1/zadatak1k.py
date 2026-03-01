@@ -9,6 +9,9 @@ def main():
     """
     try:
         # 1) Učitati podatke sa standardnog ulaza (stdin)
+        # Postavljamo UTF-8 enkoding da bismo na Windowsu bezbedno čitali Unicode/ćirilicu
+        if sys.stdin.encoding and sys.stdin.encoding.lower() != 'utf-8':
+            sys.stdin.reconfigure(encoding='utf-8')
         # Zbog funkcije splitlines(), automatski razdvajamo svaku liniju u element liste
         input_data = sys.stdin.read().splitlines()
         

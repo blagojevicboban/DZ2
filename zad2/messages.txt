@@ -1,2 +1,3 @@
-pera@etf.rs|mika@student.fon.rs-Cao kako si
-zika@student.etf.bg.ac.rs|pera@etf.bg.ac.rs-Pera kralju!
+milan@etf.rs|pi210001d@student.etf.bg.ac.rs-Zdravo Milane.
+pi210001d@student.etf.rs|milan@etf.bg.ac.rs-Pozdrav!
+milan@etf.bg.ac.rs|jovan@mas.rs-Sta ima?

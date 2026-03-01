@@ -140,6 +140,8 @@ def obradi_indirektne(parsed_flights, trazeni_par):
                      f.write(f"  {f2['airline']} {f2['raw']}\n")
 
 def main():
+    if sys.stdin.encoding and sys.stdin.encoding.lower() != 'utf-8':
+        sys.stdin.reconfigure(encoding='utf-8')
     try:
         trazeni_par = sys.stdin.readline().strip()
         if not trazeni_par:

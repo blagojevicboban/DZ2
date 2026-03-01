@@ -1,3 +1,3 @@
-mika-fon(11):pera-etf
-pera-etf(23):mika-fon,zika-etf
-zika-etf(12):pera-etf
+jovan-mas(8):milan-etf
+milan-etf(30):jovan-mas,pi210001d-etf
+pi210001d-etf(22):milan-etf
