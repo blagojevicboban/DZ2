@@ -112,8 +112,13 @@ def main():
             num_vols = len(vols)
             num_chaps = len(all_lengths)
             avg_len = sum(all_lengths) / num_chaps if num_chaps > 0 else 0.0
+            avg_str = f"{avg_len:.2f}"
+            if avg_str.endswith(".00"):
+                avg_str = str(int(avg_len))
+            elif avg_str[-1] == '0':
+                avg_str = avg_str[:-1]
             
-            l1 = f"{manga}, {num_vols}, {num_chaps}, {avg_len:.2f}"
+            l1 = f"{manga}, {num_vols}, {num_chaps}, {avg_str}"
             l2 = ", ".join(str(x) for x in all_lengths)
             out_lines.append(l1)
             out_lines.append(l2)
