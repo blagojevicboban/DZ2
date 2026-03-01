@@ -1,0 +1,8 @@
+Čelični alhemičar, Darkwood, 11.2023., 192, 1, 45, 90, 140
+Naruto, Čarobna knjiga, 05.2022., 200, 1, 50, 100, 150
+Čelični alhemičar, Darkwood, 12.2023., 210, 1, 60, 110, 160
+Naruto, Čarobna knjiga, 06.2022., 180, 1, 40, 80, 120
+One Piece, Darkwood, 01.2024., 250, 1, 60, 120, 180
+Death Note, Čarobna knjiga, 03.2021., 190, 1, 55, 110
+Čelični alhemičar, Darkwood, 01.2024., 205, 1, 44, 45
+Naruto, Čarobna knjiga, 07.2022., 195, 1, 48, 96, 145
